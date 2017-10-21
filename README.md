@@ -1,18 +1,13 @@
 # Pixel Sort
 
-Given a png image.. the algorithm return a png (called "o") sorted.
+An algorithm that sorts images in the PNG or JPEG format.
 
-``` haskell
-f :: FilePath -> IO ()
-```
-### Example 
+### Quick Start
 
--- If the image is in the same folder as the program.
+``` bash
+stack build
+stack exec PixelSort -- FILENAME.png
+stack exec PixelSort -- FILENAME.jpeg
 
-`f "01.png"`
-
--- You are able to sort only certain sections of the image, editing the following line
-
-``` haskell
-let l = [(i,j) | j <- [0..y] , i <- [0..x]]
+# You should now see an image called "out" in the current directory
 ```
