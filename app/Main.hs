@@ -1,19 +1,28 @@
 module Main where
 
 import Data.List
+import Data.List.Split
 import System.Environment
 import Graphics.GD
 
-pxlsrt :: FilePath -> IO ()
-pxlsrt file = do
-  img <- loadPngFile file
-  (x,y) <- imageSize img
-  let l = [(i,j) | j <- [0..y], i <- [0..x]] -- Edit coordinates here
-  -- For horizontal pixel sorting, swap list y with x
-  mapM (`getPixel` img) l >>= mapM (\(d,c) -> setPixel d c img).zip l.sort
-  savePngFile "out.png" img
+sortImage image = do
+    (width, height) <- imageSize image
+    let points = [(x,y) | x <- [0..width], y <- [0..height]]
+        colors = mapM (`getPixel` image) points
+        render = mapM (\(point,color) -> setPixel point color image)
+    render . zip points . sort =<< colors
+    return image
 
-main :: IO ()
+pixelSort [name, "png"] =
+  loadPngFile (name ++ ".png")
+  >>= sortImage
+  >>= savePngFile "out.png"
+
+pixelSort [name, "jpeg"] =
+  loadJpegFile (name ++ ".jpeg")
+  >>= sortImage
+  >>= saveJpegFile 95 "out.jpeg"
+
 main = do
   [filename] <- getArgs
-  pxlsrt filename
+  pixelSort $ splitOn "." filename
